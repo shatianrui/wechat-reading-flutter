@@ -19,6 +19,19 @@ class LibraryController extends ChangeNotifier {
   final List<Annotation> _annotations = [];
   ReadingStats _stats = const ReadingStats();
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  /// 持久化多为异步完成,通知前需确认未销毁(如退出阅读器时的收尾写入)。
+  void _notify() {
+    if (!_disposed) notifyListeners();
+  }
+
   List<Book> get books => List.unmodifiable(_books);
   List<Annotation> get annotations => List.unmodifiable(_annotations);
   ReadingStats get stats => _stats;
@@ -55,7 +68,7 @@ class LibraryController extends ChangeNotifier {
       _stats = ReadingStats.fromJson(statsJson);
     }
     _rolloverToday();
-    notifyListeners();
+    _notify();
   }
 
   // ---- 书架 ----
@@ -68,7 +81,7 @@ class LibraryController extends ChangeNotifier {
         .importFile(sourceName: sourceName, bytes: bytes);
     _books.insert(0, book);
     await _saveShelf();
-    notifyListeners();
+    _notify();
   }
 
   Future<void> removeBook(Book book) async {
@@ -79,7 +92,7 @@ class LibraryController extends ChangeNotifier {
     await _saveShelf();
     await _saveProgress();
     await _saveAnnotations();
-    notifyListeners();
+    _notify();
   }
 
   Future<void> _saveShelf() =>
@@ -95,7 +108,7 @@ class LibraryController extends ChangeNotifier {
     if (old != null && old.updatedAt.isAfter(progress.updatedAt)) return;
     _progress[progress.bookId] = progress;
     await _saveProgress();
-    notifyListeners();
+    _notify();
   }
 
   Future<void> _saveProgress() => _store.writeJson(
@@ -113,13 +126,13 @@ class LibraryController extends ChangeNotifier {
   Future<void> addAnnotation(Annotation annotation) async {
     _annotations.add(annotation);
     await _saveAnnotations();
-    notifyListeners();
+    _notify();
   }
 
   Future<void> removeAnnotation(String id) async {
     _annotations.removeWhere((a) => a.id == id);
     await _saveAnnotations();
-    notifyListeners();
+    _notify();
   }
 
   bool hasBookmark(String bookId, int chapterIndex, int pageStart, int pageEnd) =>
@@ -143,13 +156,13 @@ class LibraryController extends ChangeNotifier {
       listenSeconds: _stats.listenSeconds + listenSeconds,
     );
     await _store.writeJson(StoreKeys.stats, _stats.toJson());
-    notifyListeners();
+    _notify();
   }
 
   Future<void> markFinished() async {
     _stats = _stats.copyWith(finishedBooks: _stats.finishedBooks + 1);
     await _store.writeJson(StoreKeys.stats, _stats.toJson());
-    notifyListeners();
+    _notify();
   }
 
   void _rolloverToday() {

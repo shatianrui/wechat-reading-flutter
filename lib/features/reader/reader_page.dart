@@ -74,11 +74,13 @@ class _ReaderPageState extends State<ReaderPage> {
   final Stopwatch _session = Stopwatch()..start();
   bool _finishedRecorded = false;
 
+  late final LibraryController _library;
+
   @override
   void initState() {
     super.initState();
-    final progress =
-        context.read<LibraryController>().progressFor(widget.book.id);
+    _library = context.read<LibraryController>();
+    final progress = _library.progressFor(widget.book.id);
     _anchorChapter = progress?.chapterIndex ?? 0;
     _anchorOffset = progress?.charOffset ?? 0;
     _scrollChapter = _anchorChapter;
@@ -105,10 +107,9 @@ class _ReaderPageState extends State<ReaderPage> {
   }
 
   void _persistOnExit() {
-    final library = context.read<LibraryController>();
     final listenSeconds = _tts?.listenSeconds ?? 0;
     final total = _session.elapsed.inSeconds;
-    library.recordTime(
+    _library.recordTime(
       readSeconds: (total - listenSeconds).clamp(0, total),
       listenSeconds: listenSeconds,
     );
@@ -143,7 +144,10 @@ class _ReaderPageState extends State<ReaderPage> {
         _currentPage = target;
         _pageController = PageController(initialPage: target);
       });
-      old?.dispose();
+      // 旧控制器等新 PageView 挂载后再释放,避免 detach 已释放的控制器。
+      if (old != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => old.dispose());
+      }
     });
   }
 
@@ -159,7 +163,7 @@ class _ReaderPageState extends State<ReaderPage> {
 
   void _saveProgress() {
     final paginated = _paginated;
-    final library = context.read<LibraryController>();
+    final library = _library;
     double percent = 0;
     if (paginated != null && paginated.totalChars > 0) {
       final base = paginated.chapterCharBase[
