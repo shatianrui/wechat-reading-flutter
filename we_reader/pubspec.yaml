@@ -1,5 +1,5 @@
 name: we_reader
-description: "A new Flutter project."
+description: "微信读书风格的 Flutter 阅读应用（看书 + 听书）。"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -60,6 +60,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/books/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
