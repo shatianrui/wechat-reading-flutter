@@ -92,11 +92,10 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           // 设置入口（占位）。
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
+          Material(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            clipBehavior: Clip.antiAlias,
             child: Column(
               children: [
                 _stubTile(context, Icons.cloud_outlined, '云同步',
