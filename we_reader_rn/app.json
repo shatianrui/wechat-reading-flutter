@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "微读",
+    "slug": "we_reader_rn",
+    "owner": "tianruisha",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shatianrui.wereader",
+      "buildNumber": "1"
+    },
+    "android": {
+      "package": "com.shatianrui.wereader",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-asset"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4f1bd01f-edb3-4faf-b5a9-bea1dbff17a4"
+      }
+    }
+  }
+}
