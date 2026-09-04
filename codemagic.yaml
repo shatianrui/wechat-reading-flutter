@@ -7,9 +7,6 @@ workflows:
     integrations:
       app_store_connect: tianruisha
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.shatianrui.wereader
       vars:
         BUNDLE_ID: com.shatianrui.wereader
         APP_STORE_APPLE_ID: 6808449893
