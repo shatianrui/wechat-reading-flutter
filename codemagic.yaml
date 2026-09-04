@@ -5,7 +5,7 @@ workflows:
     instance_type: mac_mini_m2
     working_directory: we_reader
     integrations:
-      app_store_connect: tianruisha
+      app_store_connect: TRSha
     environment:
       groups:
         - "1"
